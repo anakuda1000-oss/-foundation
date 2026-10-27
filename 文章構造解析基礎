@@ -1,142 +1,68 @@
-{
-  "nbformat": 4,
-  "nbformat_minor": 0,
-  "metadata": {
-    "colab": {
-      "provenance": [],
-      "include_colab_link": true
-    },
-    "kernelspec": {
-      "name": "python3",
-      "display_name": "Python 3"
-    },
-    "language_info": {
-      "name": "python"
-    }
-  },
-  "cells": [
-    {
-      "cell_type": "markdown",
-      "metadata": {
-        "id": "view-in-github",
-        "colab_type": "text"
-      },
-      "source": [
-        "<a href=\"https://colab.research.google.com/github/anakuda1000-oss/-dentaku/blob/main/__.ipynb\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
-      ]
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "metadata": {
-        "colab": {
-          "base_uri": "https://localhost:8080/"
-        },
-        "id": "hBt82KI30wb8",
-        "outputId": "f738ea0e-0d5a-443b-b6d2-681c93192e35"
-      },
-      "outputs": [
-        {
-          "output_type": "stream",
-          "name": "stdout",
-          "text": [
-            "====================\n",
-            "       文章構造の解析レポート\n",
-            "====================\n",
-            "\n",
-            "【1. 文章の全体ボリューム】\n",
-            "- 総文字数    : 112 文字\n",
-            "- 段落数      : 4 個\n",
-            "- 文の数      : 4 文\n",
-            "- 1文あたりの平均長 : 28.0 文字\n",
-            "  ※ 適切な文の長さで読みやすい構成です。\n",
-            "\n",
-            "----------------------------------------\n",
-            "\n",
-            "【2. 重要キーワード Top 5】\n",
-            " 1位: 私は大学で英語を専攻しています (1回出現)\n",
-            " 2位: そして大学に入ってから理系科目を学びなおしています (1回出現)\n",
-            " 3位: 具体的には大学教養の数学 (1回出現)\n",
-            " 4位: 物理 (1回出現)\n",
-            " 5位: そしてアルゴリズムを勉強しています (1回出現)\n",
-            "\n",
-            "----------------------------------------\n",
-            "\n",
-            "\n",
-            "========================================\n"
-          ]
-        }
-      ],
-      "source": [
-        "import re\n",
-        "from collections import Counter\n",
-        "\n",
-        "def analyze_text_structure(text):\n",
-        "    print(\"=\"*20)\n",
-        "    print(\"       文章構造の解析レポート\")\n",
-        "    print(\"=\"*20)\n",
-        "    print()\n",
-        "\n",
-        "    # 1. 全体量の把握\n",
-        "    total_chars = len(text)\n",
-        "    # 改行で分割して段落数をカウント\n",
-        "    paragraphs = [p for p in text.split('\\n') if p.strip()]\n",
-        "    total_paragraphs = len(paragraphs)\n",
-        "\n",
-        "    # 「。」や「！」などで文を分割して文の数をカウント\n",
-        "    sentences = [s for s in re.split(r'[。！？\\n]', text) if s.strip()]\n",
-        "    total_sentences = len(sentences)\n",
-        "\n",
-        "    # 平均の文の長さを計算\n",
-        "    avg_sentence_len = total_chars / total_sentences if total_sentences > 0 else 0\n",
-        "\n",
-        "    print(\"【1. 文章の全体ボリューム】\")\n",
-        "    print(f\"- 総文字数    : {total_chars} 文字\")\n",
-        "    print(f\"- 段落数      : {total_paragraphs} 個\")\n",
-        "    print(f\"- 文の数      : {total_sentences} 文\")\n",
-        "    print(f\"- 1文あたりの平均長 : {avg_sentence_len:.1f} 文字\")\n",
-        "\n",
-        "    # 読みやすさの判定\n",
-        "    if avg_sentence_len > 60:\n",
-        "        print(\"  ※ 1文が長めです。箇条書きや「。」で区切るとさらに読みやすくなります。\")\n",
-        "    else:\n",
-        "        print(\"  ※ 適切な文の長さで読みやすい構成です。\")\n",
-        "    print(\"\\n\" + \"-\"*40 + \"\\n\")\n",
-        "\n",
-        "    # 2. 頻出キーワードの抽出\n",
-        "    # 2文字以上の日本語単語っぽいものを抽出する正規表現\n",
-        "    words = re.findall(r'[一-龥ぁ-んァ-ヶー]{2,}', text)\n",
-        "\n",
-        "    # 一般的な助詞や接続詞などの除外リスト（ストップワード）\n",
-        "    stopwords = {'です', 'ます', 'こと', 'ため', 'よう', 'これ', 'それ', 'あれ', 'から', 'ので', 'また', 'しかし'}\n",
-        "    filtered_words = [w for w in words if w not in stopwords]\n",
-        "\n",
-        "    # 単語の出現回数をカウント\n",
-        "    word_counts = Counter(filtered_words)\n",
-        "    top_words = word_counts.most_common(5)\n",
-        "\n",
-        "    print(\"【2. 重要キーワード Top 5】\")\n",
-        "    if top_words:\n",
-        "        for rank, (word, count) in enumerate(top_words, start=1):\n",
-        "            print(f\" {rank}位: {word} ({count}回出現)\")\n",
-        "    else:\n",
-        "        print(\" 十分な長さのキーワードが見つかりませんでした。\")\n",
-        "\n",
-        "    print(\"\\n\" + \"-\"*40 + \"\\n\")\n",
-        "\n",
-        "    print(\"\\n========================================\")\n",
-        "\n",
-        "# --- 試しに解析するサンプル文章 ---\n",
-        "sample_text = \"\"\"\n",
-        "私は大学で英語を専攻しています。\n",
-        "そして大学に入ってから理系科目を学びなおしています。\n",
-        "具体的には大学教養の数学・物理、そしてアルゴリズムを勉強しています。\n",
-        "そしてpythonを使って基礎的なプログラムを動かしています。\n",
-        "\"\"\"\n",
-        "\n",
-        "# プログラムを実行\n",
-        "analyze_text_structure(sample_text)"
-      ]
-    }
-  ]
-}
+import re
+from collections import Counter
+
+def analyze_text_structure(text):
+    print("="*40)
+    print("       文章構造の解析レポート")
+    print("="*40)
+    print()
+
+    # 1. 全体量の把握
+    total_chars = len(text)
+    # 改行で分割して段落数をカウント
+    paragraphs = [p for p in text.split('\n') if p.strip()]
+    total_paragraphs = len(paragraphs)
+
+    # 「。」や「！」などで文を分割して文の数をカウント
+    sentences = [s for s in re.split(r'[。！？\n]', text) if s.strip()]
+    total_sentences = len(sentences)
+
+    # 平均の文の長さを計算
+    avg_sentence_len = total_chars / total_sentences if total_sentences > 0 else 0
+
+    print("【1. 文章の全体ボリューム】")
+    print(f"- 総文字数    : {total_chars} 文字")
+    print(f"- 段落数      : {total_paragraphs} 個")
+    print(f"- 文の数      : {total_sentences} 文")
+    print(f"- 1文あたりの平均長 : {avg_sentence_len:.1f} 文字")
+
+    # 読みやすさの判定
+    if avg_sentence_len > 60:
+        print("  ※ 1文が長めです。箇条書きや「。」で区切るとさらに読みやすくなります。")
+    else:
+        print("  ※ 適切な文の長さで読みやすい構成です。")
+    print("\n" + "-"*40 + "\n")
+
+    # 2. 頻出キーワードの抽出
+    # 2文字以上の日本語単語っぽいものを抽出する正規表現
+    words = re.findall(r'[一-龥ぁ-んァ-ヶー]{2,}', text)
+
+    # 一般的な助詞や接続詞などの除外リスト（ストップワード）
+    stopwords = {'です', 'ます', 'こと', 'ため', 'よう', 'これ', 'それ', 'あれ', 'から', 'ので', 'また', 'しかし'}
+    filtered_words = [w for w in words if w not in stopwords]
+
+    # 単語の出現回数をカウント
+    word_counts = Counter(filtered_words)
+    top_words = word_counts.most_common(5)
+
+    print("【2. 重要キーワード Top 5】")
+    if top_words:
+        for rank, (word, count) in enumerate(top_words, start=1):
+            print(f" {rank}位: {word} ({count}回出現)")
+    else:
+        print(" 十分な長さのキーワードが見つかりませんでした。")
+
+    print("\n" + "-"*40 + "\n")
+
+    print("\n========================================")
+
+# --- 試しに解析するサンプル文章 ---
+sample_text = """
+私は大学で英語を専攻しています。
+そして大学に入ってから理系科目を学びなおしています。
+具体的には大学教養の数学・物理、そしてアルゴリズムを勉強しています。
+そしてpythonを使って基礎的なプログラムを動かしています。
+"""
+
+# プログラムを実行
+analyze_text_structure(sample_text)
